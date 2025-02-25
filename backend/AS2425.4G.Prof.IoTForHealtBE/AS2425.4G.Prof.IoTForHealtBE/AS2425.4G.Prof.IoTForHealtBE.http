@@ -1,6 +1,6 @@
+@AS2425.4G.Prof.IoTForHealtBE_HostAddress = https://localhost:7242
 @AS2425._4G.Prof.IoTForHealtBE_HostAddress = http://localhost:5195
 
-GET {{AS2425._4G.Prof.IoTForHealtBE_HostAddress}}/weatherforecast/
-Accept: application/json
+GET {{AS2425.4G.Prof.IoTForHealtBE_HostAddress}}/api/patients
 
 ###
