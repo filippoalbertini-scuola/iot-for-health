@@ -101,6 +101,26 @@ DELETE FROM patients WHERE patient_id = 9;
 -- Verify schema alteration is not allowed (should fail)
 CREATE TABLE test_table (id SERIAL PRIMARY KEY);
 
+# Authentication
+
+Install Necessary Packages
+
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
+dotnet add package System.IdentityModel.Tokens.Jwt
+dotnet add package Microsoft.AspNetCore.Identity
+
+## body for login 
+it fail
+{
+    "username": "username1",
+    "password": "password1"
+}
+success
+{
+    "username": "admin",
+    "password": "password"
+}
+
 
 
 

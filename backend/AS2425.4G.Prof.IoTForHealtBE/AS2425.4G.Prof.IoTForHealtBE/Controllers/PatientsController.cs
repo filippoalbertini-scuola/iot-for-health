@@ -1,4 +1,5 @@
 ﻿using AS2425._4G.Prof.IoTForHealtBE.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System.Data;
@@ -21,6 +22,7 @@ namespace AS2425._4G.Prof.IoTForHealtBE.Controllers
         }
 
         [HttpGet]
+        [Authorize] // 🔒 This endpoint requires a valid JWT token
         public IActionResult GetPatients()
         {
             try
