@@ -63,6 +63,7 @@ namespace AS2425._4G.Prof.IoTForHealtBE.Controllers
 
         // GET api/<PatientsController>/5
         [HttpGet("{id}")]
+        [Authorize] // 🔒 This endpoint requires a valid JWT token
         public IActionResult Get(int id)
         {
             try
@@ -99,6 +100,7 @@ namespace AS2425._4G.Prof.IoTForHealtBE.Controllers
         // GET api/<PatientsController>/search
         // GET with body (not recomended)
         [HttpGet("search")]
+        [Authorize] // 🔒 This endpoint requires a valid JWT token
         public IActionResult SearchPatients([FromBody] JsonElement request)
         {
             try
@@ -135,6 +137,7 @@ namespace AS2425._4G.Prof.IoTForHealtBE.Controllers
 
         // POST api/<PatientsController>
         [HttpPost]
+        [Authorize] // 🔒 This endpoint requires a valid JWT token
         public IActionResult Post([FromBody] JsonElement request)
         {
             try
@@ -168,6 +171,7 @@ namespace AS2425._4G.Prof.IoTForHealtBE.Controllers
 
         // PUT api/<PatientsController>/5
         [HttpPut("{id}")]
+        [Authorize] // 🔒 This endpoint requires a valid JWT token
         public IActionResult Put(int id, [FromBody] JsonElement request)
         {
             try
@@ -212,6 +216,7 @@ namespace AS2425._4G.Prof.IoTForHealtBE.Controllers
 
         // DELETE api/<PatientsController>/5
         [HttpDelete("{id}")]
+        [Authorize] // 🔒 This endpoint requires a valid JWT token
         public IActionResult Delete(int id)
         {
             try

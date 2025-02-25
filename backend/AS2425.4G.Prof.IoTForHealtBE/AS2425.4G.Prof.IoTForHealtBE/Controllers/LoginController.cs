@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AS2425._4G.Prof.IoTForHealtBE.Helpers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -14,10 +17,12 @@ namespace AS2425._4G.Prof.IoTForHealtBE.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly DatabaseHelper _dbHelper;
 
         public LoginController(IConfiguration configuration)
         {
             _configuration = configuration;
+            _dbHelper = new DatabaseHelper(configuration);
         }
 
         [HttpPost]
@@ -31,8 +36,59 @@ namespace AS2425._4G.Prof.IoTForHealtBE.Controllers
             return Unauthorized(new { message = "Invalid credentials" });
         }
 
+        /// <summary>
+        /// check if the username of the PATIENT or CLINICIAN is valid
+        /// </summary>
+        /// <param name="userLogin"></param>
+        /// <returns></returns>
         private bool IsValidUser(JsonElement userLogin)
         {
+            try
+            {
+                string query;
+
+                switch (userLogin.GetProperty("role").GetString())
+                {
+                    case "PATIENT":
+                        query = @"
+                            SELECT 
+                                password
+                            FROM 
+                                patients 
+                            WHERE 
+                                username = @username";
+                        break;
+                    case "CLINICIAN":
+                        query = @"
+                            SELECT 
+                                password
+                            FROM 
+                                clinicians 
+                            WHERE 
+                                username = @username";
+                        break;
+                    default:
+                        return false;
+                }
+
+                var parameters = new List<NpgsqlParameter>
+                {
+                    new NpgsqlParameter("@username", userLogin.GetProperty("username").GetString())
+                };
+
+                DataTable dt = _dbHelper.ExecuteQuery(query, parameters);
+
+                if (dt.Rows.Count == 1 && 
+                    userLogin.GetProperty("password").GetString() == dt.Rows[0]["password"].ToString())
+                    return true;
+                else
+                    return false;
+            }
+            catch
+            {
+                return false;
+            }
+
             // Replace this with actual user validation (e.g., database check)
             return userLogin.GetProperty("username").GetString() == "admin" && 
                 userLogin.GetProperty("password").GetString() == "password";

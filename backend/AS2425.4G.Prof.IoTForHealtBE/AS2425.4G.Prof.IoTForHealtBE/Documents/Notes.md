@@ -117,8 +117,9 @@ it fail
 }
 success
 {
-    "username": "admin",
-    "password": "password"
+    "role": "PATIENT",
+    "username": "name.surname",
+    "password": "password1"
 }
 
 

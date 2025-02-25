@@ -5,14 +5,16 @@
 ### Authentication : none
 
 ### Request
+role:string {PATIENT|CLINICIAN}
 username:string
 password:string
 
 example
 
 {
-	"username": name.surname,
-	"password": password
+    "role": "CLINICIAN",
+	"username": "name.surname",
+	"password": "password"
 }
 
 ### Response
@@ -21,7 +23,7 @@ token
 example
 
 {
-	"token": 37s1MD5IW2XCr0LZ3XukTIJh357SiIkm
+	"token": "37s1MD5IW2XCr0LZ3XukTIJh357SiIkm"
 }
 
 
