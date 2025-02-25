@@ -1,6 +1,25 @@
 @AS2425.4G.Prof.IoTForHealtBE_HostAddress = https://localhost:7242
 @AS2425._4G.Prof.IoTForHealtBE_HostAddress = http://localhost:5195
 
+@token = PUT_HERE_TOKEN_JWT
+
+
 GET {{AS2425.4G.Prof.IoTForHealtBE_HostAddress}}/api/patients
 
+###
+
+POST {{AS2425.4G.Prof.IoTForHealtBE_HostAddress}}/api/login
+Content-Type: application/json
+
+{
+    "role": "PATIENT",
+    "username": "name.surname",
+    "password": "password1"
+}
+
+###
+
+
+GET {{AS2425.4G.Prof.IoTForHealtBE_HostAddress}}/api/patients
+Authorization: Bearer {{token}}
 ###

@@ -88,10 +88,6 @@ namespace AS2425._4G.Prof.IoTForHealtBE.Controllers
             {
                 return false;
             }
-
-            // Replace this with actual user validation (e.g., database check)
-            return userLogin.GetProperty("username").GetString() == "admin" && 
-                userLogin.GetProperty("password").GetString() == "password";
         }
 
         private string CreateJwtToken(string username)
