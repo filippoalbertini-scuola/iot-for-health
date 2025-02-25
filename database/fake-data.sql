@@ -41,48 +41,34 @@ DEFAULT VALUES;  -- 2nd episode (ID = 2)
 
 -- =========================================
 -- 4. Insert into parameters
---    (1:1 relationship with episodes)
 -- =========================================
 INSERT INTO parameters (
-    episode_id, 
+	timestamp,
+    patient_id, 
     step_length, 
     frequency, 
     freeze_index, 
     energy
 )
 VALUES
-(1, 1.5, 2.0, 0.5, 10.0),  -- parameters for episode_id=1
-(2, 2.0, 2.5, 0.4, 12.0);  -- parameters for episode_id=2
+('2023-01-01 10:00:00',1, 1.5, 2.0, 0.5, 10.0),  
+('2023-01-02 11:00:00',2, 2.0, 2.5, 0.4, 12.0), 
+('2023-01-03 12:00:00',1, 1.8, 2.8, 0.3, 14.0),  
+('2023-01-04 13:00:00',2, 2.2, 2.9, 0.1, 16.0);  
 
 -- =========================================
 -- 5. Insert into freezings
---    (references episodes)
 -- =========================================
 INSERT INTO freezings (
-    episode_id, 
+    parameter_id, 
     freeze_ts, 
     duration
 )
 VALUES
 (1, '2023-01-01 10:00:00', '00:00:30'),
-(1, '2023-01-01 10:05:00', '00:00:20'),
 (2, '2023-01-02 11:00:00', '00:00:40');
 
--- =========================================
--- 6. Insert into monitorings
---    (links patients and episodes)
--- =========================================
---   patients:   ID=1 (John Doe),   ID=2 (Jane Smith)
---   episodes:   ID=1,              ID=2
-INSERT INTO monitorings (
-    patient_id, 
-    episode_id, 
-    flag_therapy
-)
-VALUES
-(1, 1, TRUE),
-(1, 2, FALSE),
-(2, 1, TRUE);
+
 
 -- =========================================
 -- 7. Insert into assistances

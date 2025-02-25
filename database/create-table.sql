@@ -28,79 +28,48 @@ CREATE TABLE clinicians (
     CONSTRAINT uq_clinicians_email UNIQUE (email)
 );
 
--- ========================================================
--- 3. EPISODES
--- ========================================================
-CREATE TABLE episodes (
-    episode_id     SERIAL PRIMARY KEY
-    -- Add additional attributes here if needed
-);
 
 -- ========================================================
--- 4. PARAMETERS (1:1 with EPISODES)
+-- 3. PARAMETERS (1:1 with FREEZINGS)
 -- ========================================================
 CREATE TABLE parameters (
-    parameters_id  SERIAL PRIMARY KEY,
-    episode_id     INT UNIQUE NOT NULL,
+    parameter_id  SERIAL PRIMARY KEY,
+    timestamp      TIMESTAMP NOT NULL,
+    patient_id     INT NOT NULL,
     step_length    NUMERIC(5,2),
     frequency      NUMERIC(5,2),
     freeze_index   NUMERIC(5,2),
     energy         NUMERIC(5,2),
-    CONSTRAINT fk_parameters_episodes
-        FOREIGN KEY (episode_id)
-        REFERENCES episodes (episode_id)
+    CONSTRAINT fk_parameters_patients
+        FOREIGN KEY (patient_id)
+        REFERENCES patients (patient_id)
         ON DELETE CASCADE
 );
 
--- Index for faster lookups on episode_id
-CREATE INDEX idx_parameters_episodes
-    ON parameters (episode_id);
+-- Index for faster lookups on patient_id
+CREATE INDEX idx_parameters_patients
+    ON parameters (patient_id);
 
 -- ========================================================
--- 5. FREEZINGS (0..n with EPISODES)
+-- 4. FREEZINGS (1..1 with PARAMETERS)
 -- ========================================================
 CREATE TABLE freezings (
     freezing_id    SERIAL PRIMARY KEY,
-    episode_id     INT NOT NULL,
+    parameter_id     INT NOT NULL,
     freeze_ts      TIMESTAMP NOT NULL,
     duration       INTERVAL,
-    CONSTRAINT fk_freezings_episodes
-        FOREIGN KEY (episode_id)
-        REFERENCES episodes (episode_id)
+    CONSTRAINT fk_freezings_parameters
+        FOREIGN KEY (parameter_id)
+        REFERENCES parameters (parameter_id)
         ON DELETE CASCADE
 );
 
--- Index for faster joins on episode_id
-CREATE INDEX idx_freezings_episodes
-    ON freezings (episode_id);
+-- Index for faster joins on parameter_id
+CREATE INDEX idx_freezings_parameters
+    ON freezings (parameter_id);
 
 -- ========================================================
--- 6. MONITORINGS (links PATIENTS and EPISODES)
--- ========================================================
-CREATE TABLE monitorings (
-    monitoring_id  SERIAL PRIMARY KEY,
-    patient_id     INT NOT NULL,
-    episode_id     INT NOT NULL,
-    flag_therapy   BOOLEAN,
-    CONSTRAINT fk_monitorings_patients
-        FOREIGN KEY (patient_id)
-        REFERENCES patients (patient_id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_monitorings_episodes
-        FOREIGN KEY (episode_id)
-        REFERENCES episodes (episode_id)
-        ON DELETE CASCADE
-);
-
--- Indexes for foreign key columns
-CREATE INDEX idx_monitorings_patients
-    ON monitorings (patient_id);
-
-CREATE INDEX idx_monitorings_episodes
-    ON monitorings (episode_id);
-
--- ========================================================
--- 7. ASSISTANCES (links PATIENTS and CLINICIANS)
+-- 5. ASSISTANCES (links PATIENTS and CLINICIANS)
 -- ========================================================
 CREATE TABLE assistances (
     assistance_id  SERIAL PRIMARY KEY,
@@ -124,7 +93,7 @@ CREATE INDEX idx_assistances_clinicians
     ON assistances (clinician_id);
 
 -- ========================================================
--- 8. DRUGS
+-- 6. DRUGS
 -- ========================================================
 CREATE TABLE drugs (
     drug_id        SERIAL PRIMARY KEY,
@@ -134,7 +103,7 @@ CREATE TABLE drugs (
 );
 
 -- ========================================================
--- 9. PHARMACOLOGICAL_THERAPIES (links ASSISTANCES and DRUGS)
+-- 7. PHARMACOLOGICAL_THERAPIES (links ASSISTANCES and DRUGS)
 -- ========================================================
 CREATE TABLE pharmacological_therapies (
     pharm_therapy_id SERIAL PRIMARY KEY,
@@ -158,7 +127,7 @@ CREATE INDEX idx_pharm_therapies_drugs
     ON pharmacological_therapies (drug_id);
 
 -- ========================================================
--- 10. MOTOR_EXERCISES
+-- 8. MOTOR_EXERCISES
 -- ========================================================
 CREATE TABLE motor_exercises (
     exercise_id     SERIAL PRIMARY KEY,
@@ -167,7 +136,7 @@ CREATE TABLE motor_exercises (
 );
 
 -- ========================================================
--- 11. REHABILITATION_THERAPIES (links ASSISTANCES and MOTOR_EXERCISES)
+-- 9. REHABILITATION_THERAPIES (links ASSISTANCES and MOTOR_EXERCISES)
 -- ========================================================
 CREATE TABLE rehabilitation_therapies (
     rehab_therapy_id SERIAL PRIMARY KEY,
