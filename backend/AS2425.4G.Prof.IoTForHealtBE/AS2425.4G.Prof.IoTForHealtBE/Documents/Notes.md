@@ -30,6 +30,14 @@ Id = 2
     "password": "password22"
 }
 
+## body request to test authentication
+
+{
+   "role": "PATIENT",
+   "username": "name.surname",
+   "password": "password1"
+}
+
 # To improve backend
 - password hashed
 - authentication/authorization (JWT)
