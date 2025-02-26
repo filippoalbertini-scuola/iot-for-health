@@ -10,7 +10,8 @@ CREATE TABLE patients (
     username       VARCHAR(50) NOT NULL,
     birth_city     VARCHAR(50),
     email          VARCHAR(255) NOT NULL,
-    CONSTRAINT uq_patients_email UNIQUE (email)
+    CONSTRAINT uq_patients_email UNIQUE (email),
+    CONSTRAINT uq_patients_username UNIQUE (username)
 );
 
 -- ========================================================
@@ -25,7 +26,8 @@ CREATE TABLE clinicians (
     username       VARCHAR(50) NOT NULL,
     birth_date     DATE,
     email          VARCHAR(255) NOT NULL,
-    CONSTRAINT uq_clinicians_email UNIQUE (email)
+    CONSTRAINT uq_clinicians_email UNIQUE (email),
+    CONSTRAINT uq_clinicians_username UNIQUE (username)
 );
 
 
@@ -58,6 +60,7 @@ CREATE TABLE freezings (
     parameter_id     INT NOT NULL,
     freeze_ts      TIMESTAMP NOT NULL,
     duration       INTERVAL,
+    CONSTRAINT uq_freezings_parameter_id UNIQUE (parameter_id),
     CONSTRAINT fk_freezings_parameters
         FOREIGN KEY (parameter_id)
         REFERENCES parameters (parameter_id)
@@ -69,31 +72,7 @@ CREATE INDEX idx_freezings_parameters
     ON freezings (parameter_id);
 
 -- ========================================================
--- 5. ASSISTANCES (links PATIENTS and CLINICIANS)
--- ========================================================
-CREATE TABLE assistances (
-    assistance_id  SERIAL PRIMARY KEY,
-    patient_id     INT NOT NULL,
-    clinician_id   INT NOT NULL,
-    CONSTRAINT fk_assistances_patients
-        FOREIGN KEY (patient_id)
-        REFERENCES patients (patient_id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_assistances_clinicians
-        FOREIGN KEY (clinician_id)
-        REFERENCES clinicians (clinician_id)
-        ON DELETE CASCADE
-);
-
--- Indexes for foreign key columns
-CREATE INDEX idx_assistances_patients
-    ON assistances (patient_id);
-
-CREATE INDEX idx_assistances_clinicians
-    ON assistances (clinician_id);
-
--- ========================================================
--- 6. DRUGS
+-- 5. DRUGS
 -- ========================================================
 CREATE TABLE drugs (
     drug_id        SERIAL PRIMARY KEY,
@@ -103,15 +82,20 @@ CREATE TABLE drugs (
 );
 
 -- ========================================================
--- 7. PHARMACOLOGICAL_THERAPIES (links ASSISTANCES and DRUGS)
+-- 6. PHARMACOLOGICAL_THERAPIES (links PATIENTS, CLINICIAN and DRUGS)
 -- ========================================================
 CREATE TABLE pharmacological_therapies (
     pharm_therapy_id SERIAL PRIMARY KEY,
-    assistance_id    INT NOT NULL,
+    patient_id     INT NOT NULL,
+    clinician_id   INT NOT NULL,
     drug_id          INT NOT NULL,
-    CONSTRAINT fk_pharm_therapies_assistances
-        FOREIGN KEY (assistance_id)
-        REFERENCES assistances (assistance_id)
+    CONSTRAINT fk_pharm_therapies_patients
+        FOREIGN KEY (patient_id)
+        REFERENCES patients (patient_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_pharm_therapies_clinicians
+        FOREIGN KEY (clinician_id)
+        REFERENCES clinicians (clinician_id)
         ON DELETE CASCADE,
     CONSTRAINT fk_pharm_therapies_drugs
         FOREIGN KEY (drug_id)
@@ -120,14 +104,17 @@ CREATE TABLE pharmacological_therapies (
 );
 
 -- Indexes for foreign key columns
-CREATE INDEX idx_pharm_therapies_assistances
-    ON pharmacological_therapies (assistance_id);
+CREATE INDEX idx_pharm_therapies_patients
+    ON pharmacological_therapies (patient_id);
+
+CREATE INDEX idx_pharm_therapies_clinicians
+    ON pharmacological_therapies (clinician_id);
 
 CREATE INDEX idx_pharm_therapies_drugs
     ON pharmacological_therapies (drug_id);
 
 -- ========================================================
--- 8. MOTOR_EXERCISES
+-- 7. MOTOR_EXERCISES
 -- ========================================================
 CREATE TABLE motor_exercises (
     exercise_id     SERIAL PRIMARY KEY,
@@ -136,15 +123,20 @@ CREATE TABLE motor_exercises (
 );
 
 -- ========================================================
--- 9. REHABILITATION_THERAPIES (links ASSISTANCES and MOTOR_EXERCISES)
+-- 8. REHABILITATION_THERAPIES (links PATIENTS, CLINICIAN and MOTOR_EXERCISES)
 -- ========================================================
 CREATE TABLE rehabilitation_therapies (
     rehab_therapy_id SERIAL PRIMARY KEY,
-    assistance_id    INT NOT NULL,
+    patient_id     INT NOT NULL,
+    clinician_id   INT NOT NULL,
     exercise_id      INT NOT NULL,
-    CONSTRAINT fk_rehab_therapies_assistances
-        FOREIGN KEY (assistance_id)
-        REFERENCES assistances (assistance_id)
+    CONSTRAINT fk_rehab_therapies_patients
+        FOREIGN KEY (patient_id)
+        REFERENCES patients (patient_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_rehab_therapies_clinicians
+        FOREIGN KEY (clinician_id)
+        REFERENCES clinicians (clinician_id)
         ON DELETE CASCADE,
     CONSTRAINT fk_rehab_therapies_motor_exercises
         FOREIGN KEY (exercise_id)
@@ -153,8 +145,11 @@ CREATE TABLE rehabilitation_therapies (
 );
 
 -- Indexes for foreign key columns
-CREATE INDEX idx_rehab_therapies_assistances
-    ON rehabilitation_therapies (assistance_id);
+CREATE INDEX idx_rehab_therapies_patients
+    ON rehabilitation_therapies (patient_id);
+
+CREATE INDEX idx_rehab_therapies_clinicians
+    ON rehabilitation_therapies (clinician_id);
 
 CREATE INDEX idx_rehab_therapies_motor_exercises
     ON rehabilitation_therapies (exercise_id);

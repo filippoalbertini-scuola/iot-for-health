@@ -30,17 +30,9 @@ VALUES
 ('Brown', 'Alice', 'pass123', '555-9999', 'alicebrown', '1975-06-15', 'alice.brown@clinic.org'),
 ('Green', 'Bob', 'mysecurepass', '555-8888', 'bobgreen', '1980-09-20', 'bob.green@clinic.org');
 
--- =========================================
--- 3. Insert into episodes
---    (We'll rely on default values for the primary key)
--- =========================================
-INSERT INTO episodes
-DEFAULT VALUES;  -- 1st episode (ID = 1)
-INSERT INTO episodes
-DEFAULT VALUES;  -- 2nd episode (ID = 2)
 
 -- =========================================
--- 4. Insert into parameters
+-- 3. Insert into parameters
 -- =========================================
 INSERT INTO parameters (
 	timestamp,
@@ -57,7 +49,7 @@ VALUES
 ('2023-01-04 13:00:00',2, 2.2, 2.9, 0.1, 16.0);  
 
 -- =========================================
--- 5. Insert into freezings
+-- 4. Insert into freezings
 -- =========================================
 INSERT INTO freezings (
     parameter_id, 
@@ -68,24 +60,8 @@ VALUES
 (1, '2023-01-01 10:00:00', '00:00:30'),
 (2, '2023-01-02 11:00:00', '00:00:40');
 
-
-
 -- =========================================
--- 7. Insert into assistances
---    (links patients and clinicians)
--- =========================================
---   patients:   ID=1 (John Doe),   ID=2 (Jane Smith)
---   clinicians: ID=1 (Alice Brown),ID=2 (Bob Green)
-INSERT INTO assistances (
-    patient_id, 
-    clinician_id
-)
-VALUES
-(1, 1),
-(2, 2);
-
--- =========================================
--- 8. Insert into drugs
+-- 5. Insert into drugs
 -- =========================================
 INSERT INTO drugs (
     company, 
@@ -98,22 +74,23 @@ VALUES
 ('WellnessInc', 'Analgesic', '10mg');
 
 -- =========================================
--- 9. Insert into pharmacological_therapies
---    (links assistances and drugs)
+-- 6. Insert into pharmacological_therapies
+--    (links patients, clinicians and drugs)
 -- =========================================
 --   assistances:  ID=1 (patient=1,clinician=1), ID=2 (patient=2,clinician=2)
 --   drugs:        ID=1,2,3
 INSERT INTO pharmacological_therapies (
-    assistance_id, 
+    patient_id, 
+    clinician_id,
     drug_id
 )
 VALUES
-(1, 1),  -- assistance 1, drug 1
-(1, 2),  -- assistance 1, drug 2
-(2, 3);  -- assistance 2, drug 3
+(1, 1, 1),
+(1, 2, 2),
+(2, 1, 3);
 
 -- =========================================
--- 10. Insert into motor_exercises
+-- 7. Insert into motor_exercises
 -- =========================================
 INSERT INTO motor_exercises (
     description, 
@@ -125,16 +102,17 @@ VALUES
 ('Balance board', 'Balance');
 
 -- =========================================
--- 11. Insert into rehabilitation_therapies
---     (links assistances and motor_exercises)
+-- 8. Insert into rehabilitation_therapies
+--     (links patients, clinicians and motor_exercises)
 -- =========================================
 --   assistances:       ID=1,2
 --   motor_exercises:   ID=1,2,3
 INSERT INTO rehabilitation_therapies (
-    assistance_id, 
+    patient_id, 
+    clinician_id,
     exercise_id
 )
 VALUES
-(1, 1),  -- assistance 1, exercise 1
-(1, 2),  -- assistance 1, exercise 2
-(2, 3);  -- assistance 2, exercise 3
+(1, 1, 1),
+(1, 2, 2),
+(2, 1, 3);
