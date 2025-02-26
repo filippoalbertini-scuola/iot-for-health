@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Patient } from "../models/Patient";
+import { fetchWithAuth } from "../library/fetchWithAuth";
 
 const ListPatients: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -7,22 +8,9 @@ const ListPatients: React.FC = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const token = localStorage.getItem('JWT');
-        if (!token) {
-          throw new Error('No token found');
-        }
-
-        const response = await fetch('https://localhost:7242/api/patients', {
+        const response = await fetchWithAuth('https://localhost:7242/api/patients', {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          }
         });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch patients');
-        }
 
         const patients = await response.json();
         console.log('response', patients);
