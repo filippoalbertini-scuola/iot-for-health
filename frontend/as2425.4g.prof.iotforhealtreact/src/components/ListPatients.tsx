@@ -29,10 +29,10 @@ const ListPatients: React.FC = () => {
       <h2>Patients List</h2>
       <ul className="patients-list">
         {patients.map((patient) => (
-          <li key={patient.username}>
-            <span>Username: {patient.username}</span>
-            <span>Name: {patient.name}</span>
-            <span>Surname: {patient.surname}</span>
+          <li key={patient.username} className="patient-item">
+            <span className="patient-field">Username: {patient.username}</span>
+            <span className="patient-field">Name: {patient.name}</span>
+            <span className="patient-field">Surname: {patient.surname}</span>
           </li>
         ))}
       </ul>
